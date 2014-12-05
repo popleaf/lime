@@ -290,7 +290,8 @@ class AndroidPlatform extends PlatformTarget {
 		context.ANDROID_EXTENSIONS = project.config.getArrayString ("android.extension");
 		context.ANDROID_PERMISSIONS = project.config.getArrayString ("android.permission", [ "android.permission.WAKE_LOCK", "android.permission.INTERNET", "android.permission.VIBRATE", "android.permission.ACCESS_NETWORK_STATE" ]);
 		context.ANDROID_LIBRARY_PROJECTS = [];
-		
+	
+
 		if (Reflect.hasField (context, "KEY_STORE")) context.KEY_STORE = StringTools.replace (context.KEY_STORE, "\\", "\\\\");
 		if (Reflect.hasField (context, "KEY_STORE_ALIAS")) context.KEY_STORE_ALIAS = StringTools.replace (context.KEY_STORE_ALIAS, "\\", "\\\\");
 		if (Reflect.hasField (context, "KEY_STORE_PASSWORD")) context.KEY_STORE_PASSWORD = StringTools.replace (context.KEY_STORE_PASSWORD, "\\", "\\\\");
@@ -369,6 +370,22 @@ class AndroidPlatform extends PlatformTarget {
 			
 		}
 		
+
+		var supportsScreens = project.config.get("android.supports-screens");
+		
+		if (supportsScreens != null) {
+		
+			context.ANDROID_SUPPORTS_SCREENS = [];
+			
+			for (property in Reflect.fields(supportsScreens)) {
+
+				var resolvedAttributeName = "android:" + convertAttributeNameToCamelCase(property);
+				context.ANDROID_SUPPORTS_SCREENS.push( { "name" : resolvedAttributeName, "value" : Reflect.getProperty(supportsScreens, property) } );
+			
+			}
+		
+		}
+
 		FileHelper.recursiveCopyTemplate (project.templatePaths, "android/template", destination, context);
 		FileHelper.copyFileTemplate (project.templatePaths, "android/MainActivity.java", packageDirectory + "/MainActivity.java", context);
 		FileHelper.recursiveCopyTemplate (project.templatePaths, "haxe", project.app.path + "/android/haxe", context);
@@ -389,5 +406,20 @@ class AndroidPlatform extends PlatformTarget {
 		
 	}
 	
+
+	private function convertAttributeNameToCamelCase(name:String):String {
+		
+		var nameParts = name.split("-");
+		
+		for (i in 1...nameParts.length) {
+		
+			var firstLetter = nameParts[i].substring(0, 1).toUpperCase();
+			nameParts[i] = firstLetter + nameParts[i].substring(1);
+		
+		}
+
+		return nameParts.join("");
+	
+	}
 	
 }

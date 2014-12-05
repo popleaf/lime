@@ -1419,7 +1419,14 @@ class ProjectXMLParser extends HXProject {
 									}
 									
 									//ArrayHelper.addUnique (config.android.permissions, value);
-								
+								case "small-screens", "normal-screens", "large-screens", "xlarge-screens":
+
+										config.push ("android.supports-screens." + name, value == "true");
+
+								case "requires-smallest-width-dp", "compatible-width-limit-dp", "largest-width-limit-dp":
+
+										config.push ("android.supports-screens." + name, Std.parseInt(value));
+
 								default:
 									
 									name = formatAttributeName (attribute);
