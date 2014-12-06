@@ -30,12 +30,18 @@ import sys.FileSystem;
 
 
 class IOSPlatform extends PlatformTarget {
-	
+	public var iPadSupported:Bool = false;
+	public var iPhoneSupported:Bool = false;
+
+
 	
 	public function new (command:String, _project:HXProject, targetFlags:Map <String, String> ) {
 		
 		super (command, _project, targetFlags);
 		
+		var device = project.config.getString ("ios.device", null);
+		iPhoneSupported = (device == null || device == "iphone");
+		iPadSupported = (device == null || device == "ipad");
 	}
 	
 	
@@ -194,7 +200,7 @@ class IOSPlatform extends PlatformTarget {
 			
 		}
 		
-		if (project.config.getString ("ios.device", "universal") == "universal" || project.config.getString ("ios.device") == "iphone") {
+		if (iPhoneSupported) {
 			
 			if (project.config.getInt ("ios.deployment", 5) < 5) {
 				
