@@ -114,7 +114,7 @@ class IOSPlatform extends PlatformTarget {
 		
 		context.HAS_ICON = false;
 		context.HAS_LAUNCH_IMAGE = false;
-		context.LAUNCH_IMAGES = [];
+		context.BUNDLE_ICON_FILES = [];
 
 		context.OBJC_ARC = false;
 
@@ -447,7 +447,7 @@ class IOSPlatform extends PlatformTarget {
 					context.RESOURCE_GROUP.push(splashScreenInfo);
 					context.RESOURCE_BUILD_PHASE.push(splashScreenInfo);
 					context.FILE_REFERENCES.push(splashScreenInfo);
-					context.LAUNCH_IMAGES.push(splashScreenInfo);
+					context.BUNDLE_ICON_FILES.push(splashScreenInfo);
 				
 				}
 				
@@ -589,6 +589,7 @@ class IOSPlatform extends PlatformTarget {
 		
 	}*/
 	
+
 
 	public function generateFileInfo(relativePath:String, sourceTreeType:SourceTreeType = SourceTreeType.Group, name:String = null):Dynamic {
 		
