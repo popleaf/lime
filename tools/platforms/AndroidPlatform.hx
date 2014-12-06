@@ -385,6 +385,19 @@ class AndroidPlatform extends PlatformTarget {
 			
 		}
 		
+		for (language in project.localizations.keys()) {
+
+			var strings = project.localizations.get(language);
+			
+			if (strings.exists("title")) {
+				var localizedContext = { APP_TITLE : strings.get("title") };
+				var localizedDestinationDirectory = destination + "/res/values-" + language + "/";
+				PathHelper.mkdir (localizedDestinationDirectory);
+				FileHelper.copyFileTemplate(project.templatePaths, "android/template/res/values/Strings.xml", localizedDestinationDirectory + "Strings.xml", localizedContext);
+			}
+
+		}
+
 		AssetHelper.createManifest (project, destination + "/assets/manifest");
 		
 	}
