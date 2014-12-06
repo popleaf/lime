@@ -436,16 +436,19 @@ class IOSPlatform extends PlatformTarget {
 			
 			var width = splashScreenWidth[i];
 			var height = splashScreenHeight[i];
-			var match = false;
 
 			for (splashScreen in project.splashScreens) {
+				
 				if (splashScreen.width == width && splashScreen.height == height && Path.extension (splashScreen.path) == "png") {
-					var uniqueID = StringHelper.getUniqueID();
-					var buildFileUDID = "1EF0A83A0000001D" + uniqueID;					
-					var fileRefUDID =   "1EF0A83A0000001E" + uniqueID;					
+				
 					FileHelper.copyFile (splashScreen.path, PathHelper.combine (projectDirectory, splashScreenNames[i]));
-					context.LAUNCH_IMAGES.push( { "name": splashScreenNames[i], "build_file_udid" : buildFileUDID, "file_ref_udid" : fileRefUDID } );	
-					match = true;
+					var splashScreenInfo = generateFileInfo(project.app.file + "/" + splashScreenNames[i]);			
+					context.BUILD_FILES.push(splashScreenInfo);
+					context.RESOURCE_GROUP.push(splashScreenInfo);
+					context.RESOURCE_BUILD_PHASE.push(splashScreenInfo);
+					context.FILE_REFERENCES.push(splashScreenInfo);
+					context.LAUNCH_IMAGES.push(splashScreenInfo);
+				
 				}
 				
 			}
