@@ -1529,6 +1529,31 @@ class ProjectXMLParser extends HXProject {
 						
 						config.parse (element);
 					
+					case "localization":
+
+						if (element.has.language) {
+
+							var language:String = element.att.language;
+							var stringsForLanguage = localizations.get(language);
+
+							if (stringsForLanguage == null) {
+
+								stringsForLanguage = new Map<String, String>();
+								localizations.set(language, stringsForLanguage);
+
+							}
+
+							for (attr in element.x.attributes()) {
+								
+								if (attr != "language") {
+									
+									stringsForLanguage.set(attr, element.x.get(attr));
+
+								}
+
+							}
+						}
+
 					default :
 						
 						if (StringTools.startsWith (element.name, "config:")) {

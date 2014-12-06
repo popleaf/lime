@@ -60,7 +60,8 @@ class HXProject {
 	public var templatePaths:Array <String>;
 	@:isVar public var window (get, set):Window;
 	public var windows:Array <Window>;
-	
+	public var localizations:Map<String, Map<String, String>>;
+
 	private var defaultApp:ApplicationData;
 	private var defaultMeta:MetaData;
 	private var defaultWindow:Window;
@@ -197,7 +198,7 @@ class HXProject {
 		samplePaths = new Array <String> ();
 		splashScreens = new Array <SplashScreen> ();
 		targetHandlers = new Map <String, String> ();
-		
+		localizations = new Map <String, Map <String, String>> ();
 	}
 	
 	
@@ -315,6 +316,12 @@ class HXProject {
 			
 			project.windows[i] = (ObjectHelper.copyFields (windows[i], {}));
 			
+		}
+
+		for (language in localizations.keys()) {
+
+			project.localizations.set(language, localizations.get(language));
+		
 		}
 		
 		return project;
