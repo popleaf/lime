@@ -424,7 +424,44 @@ class IOSPlatform extends PlatformTarget {
 		}
 		
 		context.HAS_LAUNCH_IMAGE = true;
-		
+
+
+		var validLocalizations:Array<Dynamic> = [];
+
+		for (language in project.localizations.keys()) {			
+
+			var strings = project.localizations.get(language);
+			
+			// currently the only bit of localization data is the title, so we ignore any localization that doesn't have a "title" string defined
+			if (strings.exists("title")) {							
+				
+				var localizedContext = { APP_TITLE : strings.get("title") };
+				var relativeDestinationDirectory = project.app.file + "/localizations/" + language + ".lproj/";
+				var localizedDestinationDirectory = targetDirectory + "/" + relativeDestinationDirectory;
+				PathHelper.mkdir (localizedDestinationDirectory);
+				var destinationPath = localizedDestinationDirectory + "InfoPlist.strings";
+				FileHelper.copyFileTemplate(project.templatePaths, "iphone/PROJ/localizations/LANG.lproj/InfoPlist.strings", destinationPath, localizedContext);
+
+				var fileInfo = generateFileInfo(relativeDestinationDirectory + "InfoPlist.strings", language);
+				context.FILE_REFERENCES.push(fileInfo);
+				validLocalizations.push(fileInfo);
+				
+			}
+				
+		}
+
+		if (validLocalizations.length > 0) {
+
+			var fileInfo = generateFileInfo("InfoPlist.strings");
+			context.BUILD_FILES.push(fileInfo);
+			context.RESOURCE_GROUP.push(fileInfo);
+			context.RESOURCE_BUILD_PHASE.push(fileInfo);
+
+			fileInfo.children = validLocalizations;
+			context.VARIANT_GROUPS.push(fileInfo);
+		}
+
+
 		FileHelper.recursiveCopyTemplate (project.templatePaths, "iphone/PROJ/haxe", projectDirectory + "/haxe", context);
 		FileHelper.recursiveCopyTemplate (project.templatePaths, "haxe", projectDirectory + "/haxe", context);
 		FileHelper.recursiveCopyTemplate (project.templatePaths, "iphone/PROJ/Classes", projectDirectory + "/Classes", context);
