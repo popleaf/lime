@@ -117,7 +117,13 @@ class IOSPlatform extends PlatformTarget {
 		context.LAUNCH_IMAGES = [];
 
 		context.OBJC_ARC = false;
-		
+
+		context.BUILD_FILES = [];
+		context.FILE_REFERENCES = [];
+		context.RESOURCE_GROUP = [];
+		context.RESOURCE_BUILD_PHASE = [];
+		context.VARIANT_GROUPS = [];
+
 		context.linkedLibraries = [];
 		
 		for (dependency in project.dependencies) {
@@ -580,10 +586,44 @@ class IOSPlatform extends PlatformTarget {
 		
 	}*/
 	
+
+	public function generateFileInfo(relativePath:String, sourceTreeType:SourceTreeType = SourceTreeType.Group, name:String = null):Dynamic {
+		
+		var uniqueID = StringHelper.getUniqueID();
+		var buildFileUDID = "1EF0A83A0000001D" + uniqueID;					
+		var fileRefUDID =   "1EF0A83A0000001E" + uniqueID;	
+		var ext = relativePath.substring(relativePath.lastIndexOf(".") + 1);
+		var type = null;
+		
+		// full list of properties can be found at: https://github.com/Monobjc/monobjc-tools/blob/master/Monobjc.Tools/Xcode/PBXFileType.cs
+		switch (ext) {
+		
+			case "png": type = "image.png";
+			case "strings": type = "text.plist.strings";
+			case "plist": type = "text.plist.xml";
+			default:
+				LogHelper.warn("Cannot determine XCode lastKnownFileType value for '" + relativePath + "'.");
+				type = "unknown";
+		}
+
+		if (name == null) {
+			name = relativePath.substring(relativePath.lastIndexOf("/") + 1);
+		}
+
+		return { "name" : name, "path" : relativePath, "build_file_udid" : buildFileUDID, "file_ref_udid" : fileRefUDID, "type" : type, "source_tree" : sourceTreeType };
+	}
+
+
 	
 	@ignore public override function install ():Void {}
 	@ignore public override function trace ():Void {}
 	@ignore public override function uninstall ():Void {}
 	
 	
+}
+
+
+@:enum abstract SourceTreeType(String) {
+	var Group = "\"<group>\"";
+	var Root = "SOURCE_ROOT";
 }
